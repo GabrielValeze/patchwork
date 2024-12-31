@@ -1,1 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patchwork Pricing Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #444;
+        }
+        label {
+            display: block;
+            margin: 15px 0 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Patchwork Pricing Tool</h1>
+        <label for="fabric-cost">Cost of Fabric (per meter):</label>
+        <input type="number" id="fabric-cost" placeholder="e.g., 2.39" step="0.01">
+
+        <label for="fabric-length">Length of Fabric Purchased (meters):</label>
+        <input type="number" id="fabric-length" placeholder="e.g., 10" step="0.01">
+
+        <label for="fabric-used">Length of Fabric Used (centimeters):</label>
+        <input type="number" id="fabric-used" placeholder="e.g., 30">
+
+        <label for="monthly-income">Desired Monthly Income (R$):</label>
+        <input type="number" id="monthly-income" placeholder="e.g., 1100">
+
+        <label for="days-worked">Days Worked Per Month:</label>
+        <input type="number" id="days-worked" placeholder="e.g., 26">
+
+        <label for="hours-per-day">Hours Worked Per Day:</label>
+        <input type="number" id="hours-per-day" placeholder="e.g., 8">
+
+        <label for="pieces-per-hour">Pieces Produced Per Hour:</label>
+        <input type="number" id="pieces-per-hour" placeholder="e.g., 4">
+
+        <label for="fixed-costs">Monthly Fixed Costs (R$):</label>
+        <input type="number" id="fixed-costs" placeholder="e.g., 300">
+
+        <button onclick="calculatePrice()">Calculate</button>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        function calculatePrice() {
+            const fabricCost = parseFloat(document.getElementById('fabric-cost').value);
+            const fabricLength = parseFloat(document.getElementById('fabric-length').value);
+            const fabricUsed = parseFloat(document.getElementById('fabric-used').value);
+            const monthlyIncome = parseFloat(document.getElementById('monthly-income').value);
+            const daysWorked = parseInt(document.getElementById('days-worked').value);
+            const hoursPerDay = parseInt(document.getElementById('hours-per-day').value);
+            const piecesPerHour = parseInt(document.getElementById('pieces-per-hour').value);
+            const fixedCosts = parseFloat(document.getElementById('fixed-costs').value);
+
+            if (isNaN(fabricCost) || isNaN(fabricLength) || isNaN(fabricUsed) || isNaN(monthlyIncome) || isNaN(daysWorked) || isNaN(hoursPerDay) || isNaN(piecesPerHour) || isNaN(fixedCosts)) {
+                document.getElementById('result').innerHTML = 'Please fill in all fields correctly.';
+                return;
+            }
+
+            const costPerCentimeter = fabricCost / (fabricLength * 100);
+            const fabricCostUsed = costPerCentimeter * fabricUsed;
+
+            const dailyIncome = monthlyIncome / daysWorked;
+            const hourlyIncome = dailyIncome / hoursPerDay;
+            const laborCostPerPiece = hourlyIncome / piecesPerHour;
+
+            const dailyFixedCost = fixedCosts / daysWorked;
+            const hourlyFixedCost = dailyFixedCost / hoursPerDay;
+            const fixedCostPerPiece = hourlyFixedCost / piecesPerHour;
+
+            const totalCostPerPiece = fabricCostUsed + laborCostPerPiece + fixedCostPerPiece;
+
+            document.getElementById('result').innerHTML = `
+                <p><strong>Fabric Cost for Used Amount:</strong> R$ ${fabricCostUsed.toFixed(2)}</p>
+                <p><strong>Labor Cost Per Piece:</strong> R$ ${laborCostPerPiece.toFixed(2)}</p>
+                <p><strong>Fixed Cost Per Piece:</strong> R$ ${fixedCostPerPiece.toFixed(2)}</p>
+                <p><strong>Total Cost Per Piece:</strong> R$ ${totalCostPerPiece.toFixed(2)}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
 
